@@ -69,7 +69,6 @@ def root():
             for i in range(timeout):
                 pDialog.update(int(i / float(timeout) * 100))
                 if pDialog.iscanceled():
-                    xbmc.executebuiltin("StopScript({0})".format(SOP_SCRIPT))
                     break
                 try:
                     _r = session.get(player_url, stream=True, timeout=1)
@@ -77,10 +76,7 @@ def root():
                     LIVE = True
                     break
                 except Exception:
-                    if i == timeout:
-                        xbmc.executebuiltin("StopScript({0})".format(SOP_SCRIPT))
-                    else:
-                        xbmc.sleep(1000)
+                    xbmc.sleep(1000)
 
             session.close()
             pDialog.close()

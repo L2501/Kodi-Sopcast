@@ -18,6 +18,10 @@ class SopCastPlayer(Player):
     def __init__(self):
         Player.__init__(self)
         self.ended = False
+        self.started = False
+
+    def onPlayBackStarted(self):
+        self.started = True
 
     def onPlayBackError(self):
         self.ended = True
@@ -45,9 +49,16 @@ class SopCastMonitor(Monitor):
 
     def run(self):
         self.start_sopcast()
+        pre_start = 0
+        # non-service addons do not recieve abort signal
         while not self.abortRequested():
-            if self.waitForAbort(1) or self.player.ended:
+            if not self.player.started:
+                pre_start +=1
+                if pre_start >=100:
+                    break
+            if self.player.ended:
                 break
+            self.waitForAbort(1)
         self.stop_sopcast()
 
     def start_sopcast(self):
@@ -80,9 +91,16 @@ class DockerSopCastMonitor(Monitor):
 
     def run(self):
         self.start_sopcast()
+        pre_start = 0
+        # non-service addons do not recieve abort signal
         while not self.abortRequested():
-            if self.waitForAbort(1) or self.player.ended:
+            if not self.player.started:
+                pre_start +=1
+                if pre_start >=100:
+                    break
+            if self.player.ended:
                 break
+            self.waitForAbort(1)
         self.stop_sopcast()
 
     def start_sopcast(self):
