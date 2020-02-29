@@ -18,9 +18,15 @@ jobs:
       - name: Create zip name
         id: create_name
         run: echo ::set-output name=zip_name::${ADDON_ID}-${GITHUB_REF#refs/tags/v}.zip
+      - name: Create zip name Kodi 19
+        id: create_name_19
+        run: echo ::set-output name=zip_name::${ADDON_ID}-${GITHUB_REF#refs/tags/v}.kodi19.zip
       - name: Build project
         working-directory: script.sopcast.player
-        run: git archive --prefix=${ADDON_ID}/ -o ../artifact.zip -9 HEAD
+        run: |
+          git archive --prefix=${ADDON_ID}/ -o ../artifact.zip -9 HEAD
+          cp ../artifact.zip ../artifact-kodi19.zip
+          cd kodi19 && zip -r ../../artifact-kodi19.zip ${ADDON_ID}/addon.xml
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
@@ -40,5 +46,15 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./artifact.zip
           asset_name: ${{ steps.create_name.outputs.zip_name }}
+          asset_content_type: application/zip
+      - name: Upload Release Asset Kodi 19
+        id: upload-release-asset-19
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifact-kodi19.zip
+          asset_name: ${{ steps.create_name_19.outputs.zip_name }}
           asset_content_type: application/zip
 

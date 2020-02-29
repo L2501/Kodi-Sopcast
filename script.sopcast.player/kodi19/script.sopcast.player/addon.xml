@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.sopcast.player" name="script.sopcast.player" version="2.1" provider-name="SopCast">
     <requires>
-        <import addon="xbmc.python" version="2.19.0" />
+        <import addon="xbmc.python" version="3.0.0" />
         <import addon="script.module.requests" />
         <import addon="script.module.kodi-six" />
         <import addon="script.module.routing" />
